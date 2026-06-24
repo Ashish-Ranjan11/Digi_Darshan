@@ -1,3 +1,4 @@
+
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, Field
@@ -233,5 +234,30 @@ class NotificationOut(BaseModel):
     message: str
     is_read: bool
     created_at: datetime
+
+    model_config = {"from_attributes": True}
+class ControlActionCreate(BaseModel):
+    temple_id: int
+    action_type: str
+    title: Optional[str] = None
+    instruction: Optional[str] = None
+    severity: str = "warning"
+    location: Optional[str] = None
+
+
+class ControlActionOut(BaseModel):
+    id: int
+    temple_id: int
+    action_type: str
+    title: str
+    instruction: str
+    severity: str
+    location: Optional[str] = None
+    status: str
+    created_by_id: Optional[int] = None
+    created_at: datetime
+    resolved_at: Optional[datetime] = None
+    temple_name: Optional[str] = None
+    created_by_name: Optional[str] = None
 
     model_config = {"from_attributes": True}

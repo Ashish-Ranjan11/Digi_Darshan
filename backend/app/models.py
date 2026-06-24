@@ -191,3 +191,17 @@ class Notification(Base):
     message = Column(Text, nullable=False)
     is_read = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+class ControlAction(Base):
+    __tablename__ = "control_actions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    temple_id = Column(Integer, ForeignKey("temples.id"), nullable=False)
+    action_type = Column(String(80), nullable=False)
+    title = Column(String(180), nullable=False)
+    instruction = Column(Text, nullable=False)
+    severity = Column(String(30), default="warning")
+    location = Column(String(180), nullable=True)
+    status = Column(String(30), default="active")
+    created_by_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    resolved_at = Column(DateTime(timezone=True), nullable=True)
