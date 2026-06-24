@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: #fff7ed;
+  color: #1f2937;
+}
+
+.card {
+  @apply rounded-3xl border border-orange-100 bg-white/90 shadow-soft;
+}
+
+.input {
+  @apply w-full rounded-2xl border border-orange-200 bg-white px-4 py-3 text-sm outline-none ring-orange-400 transition focus:ring-2;
+}
+
+.btn-primary {
+  @apply rounded-2xl bg-orange-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-orange-200 transition hover:bg-orange-700 disabled:opacity-50;
+}
+
+.btn-secondary {
+  @apply rounded-2xl border border-orange-200 bg-white px-5 py-3 text-sm font-bold text-orange-700 transition hover:bg-orange-50 disabled:opacity-50;
+}
