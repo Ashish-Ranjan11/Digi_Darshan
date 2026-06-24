@@ -1,232 +1,290 @@
-# Digii-Darshan — Smart Pilgrimage Crowd Management
+# Digii-Darshan — Smart Pilgrimage & Temple Crowd Management System
 
-Digii-Darshan is a full-stack SIH-ready MVP for **Temple & Pilgrimage Crowd Management**. It supports slot-based e-ticketing, live crowd readings, emergency alerts, parking/route guidance, senior-friendly booking support, QR ticket scanning, and role-based dashboards.
+**Digii-Darshan** is a full-stack web platform designed to improve crowd regulation, queue management, emergency response, and accessibility across high-footfall temples and pilgrimage sites. The project was developed for **Smart India Hackathon 2025**, under the problem statement **Temple & Pilgrimage Crowd Management — Somnath, Dwarka, Ambaji, and Pavagadh**.
 
-## Main modules
+The platform provides a digital ecosystem where pilgrims can book darshan slots, receive QR-based e-tickets, track queue status, access parking and route guidance, and receive emergency alerts. Temple authorities can monitor live crowd density, manage time slots, view occupancy analytics, verify tickets, and respond to safety alerts through a centralized admin dashboard.
 
-- **DigiiQueue & E-Ticketing**: time-slot booking, digital ticket codes, QR display, gate assignment.
-- **Digii-CrowdControl**: live occupancy, density level, current queue/capacity dashboard.
-- **Digii-Suraksha**: emergency alerts with location and clear instructions.
-- **Digii-Flowmaster**: parking availability and transport/shuttle route data.
-- **SeniorSathi**: senior citizen and differently-abled visitor counts with priority slot planning.
+---
 
-## Tech stack
+## Project Overview
+
+Large pilgrimage sites often face overcrowding, long queues, traffic congestion, lack of real-time communication, and safety risks during peak hours and festivals. Digii-Darshan addresses these issues through a scalable software-based solution that combines slot-based ticketing, live occupancy tracking, QR verification, emergency alerting, and role-based dashboards.
+
+The goal is to make temple visits safer, smoother, more accessible, and better organized for pilgrims, senior citizens, differently-abled visitors, temple administrators, and emergency response teams.
+
+---
+
+## Key Features
+
+### Pilgrim Module
+
+* Secure pilgrim registration and login.
+* Temple-wise darshan slot booking.
+* QR-based digital ticket generation.
+* Live queue and booking status.
+* Parking and route guidance.
+* Emergency alerts and temple notifications.
+* Senior citizen and differently-abled priority booking support.
+
+### Admin Control Room
+
+* Role-based admin login.
+* Temple-wise crowd monitoring dashboard.
+* Live occupancy and crowd density updates.
+* Slot creation and capacity management.
+* Emergency alert generation.
+* Booking and check-in analytics.
+* Parking zone and route visibility.
+
+### Scanner / Gate Staff Module
+
+* QR ticket verification.
+* Pilgrim check-in and check-out flow.
+* Ticket validity status.
+* Entry control support for temple gates.
+
+### Emergency & Safety Module
+
+* Real-time alert broadcasting.
+* Emergency instructions for pilgrims.
+* Crowd risk visibility for admins.
+* Supports faster coordination with response teams.
+
+---
+
+## Tech Stack
 
 ### Frontend
-- Next.js + React + TypeScript
-- Tailwind CSS
-- QR display with `qrcode.react`
-- Vercel-ready deployment
+
+* Next.js
+* React.js
+* TypeScript
+* Tailwind CSS
+* Axios
+* Responsive UI Components
 
 ### Backend
-- Python FastAPI
-- SQLAlchemy ORM
-- JWT authentication
-- WebSockets for live temple updates
-- SQLite for local development
-- PostgreSQL for production deployment
+
+* Python
+* FastAPI
+* SQLAlchemy
+* Pydantic
+* JWT Authentication
+* WebSockets
+* REST APIs
 
 ### Database
-Core tables:
-- `users`
-- `temples`
-- `time_slots`
-- `bookings`
-- `crowd_readings`
-- `alerts`
-- `parking_zones`
-- `transport_routes`
-- `notifications`
 
-## Folder structure
+* SQLite for local development
+* PostgreSQL-ready for production deployment
 
-```txt
+### DevOps & Deployment
+
+* Git & GitHub
+* Vercel-ready frontend
+* Render/Railway-ready backend
+* Environment-based configuration
+* Docker support
+
+---
+
+## System Architecture
+
+```text
 digidarshan-fullstack/
-  backend/
-    app/
-      main.py
-      models.py
-      schemas.py
-      database.py
-      config.py
-      security.py
-      deps.py
-      websocket_manager.py
-      seed.py
-      routers/
-        auth.py
-        temples.py
-        slots.py
-        bookings.py
-        crowd.py
-        alerts.py
-        parking.py
-        scanner.py
-        dashboard.py
-        notifications.py
-    requirements.txt
-    Dockerfile
-    .env.example
-    tests/
-  frontend/
-    app/
-      page.tsx
-      login/page.tsx
-      register/page.tsx
-      dashboard/page.tsx
-      admin/page.tsx
-      scanner/page.tsx
-      globals.css
-      layout.tsx
-    components/
-    lib/
-    package.json
-    tailwind.config.ts
-    .env.local.example
-  docker-compose.yml
+│
+├── backend/
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   ├── database.py
+│   │   ├── security.py
+│   │   ├── seed.py
+│   │   └── routers/
+│   │       ├── auth.py
+│   │       ├── temples.py
+│   │       ├── bookings.py
+│   │       ├── crowd.py
+│   │       ├── alerts.py
+│   │       ├── scanner.py
+│   │       └── analytics.py
+│   │
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   └── .env.example
+│
+├── frontend/
+│   ├── app/
+│   │   ├── page.tsx
+│   │   ├── login/
+│   │   ├── register/
+│   │   ├── dashboard/
+│   │   ├── admin/
+│   │   └── scanner/
+│   │
+│   ├── components/
+│   ├── lib/
+│   ├── package.json
+│   ├── tailwind.config.ts
+│   └── .env.local.example
+│
+├── docker-compose.yml
+├── README.md
+└── .gitignore
 ```
 
-## Local setup
+---
 
-### 1. Backend
+## Database Design
 
-```bash
-cd backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-python -m app.seed
-uvicorn app.main:app --reload
+The backend uses SQLAlchemy ORM with a relational database structure.
+
+### Main Tables
+
+```text
+users
+temples
+time_slots
+bookings
+crowd_readings
+alerts
+parking_zones
+transport_routes
+notifications
 ```
 
-Backend runs at:
+### User Roles
 
-```txt
-http://127.0.0.1:8000
-http://127.0.0.1:8000/docs
+```text
+pilgrim
+admin
+operator
+scanner
 ```
 
-### 2. Frontend
+Each role has a separate workflow and dashboard access, making the system suitable for real-world temple administration and crowd-control operations.
 
-Open a new terminal:
+---
 
-```bash
-cd frontend
-npm install
-cp .env.local.example .env.local
-npm run dev
+
+
+---
+
+## Demo Credentials
+
+After running the seed command, use the following demo accounts:
+
+| Role               | Email                                                     | Password     |
+| ------------------ | --------------------------------------------------------- | ------------ |
+| Admin              | [admin@digidarshan.in](mailto:admin@digidarshan.in)       | Admin@123    |
+| Emergency Operator | [operator@digidarshan.in](mailto:operator@digidarshan.in) | Operator@123 |
+| Scanner            | [scanner@digidarshan.in](mailto:scanner@digidarshan.in)   | Scanner@123  |
+| Pilgrim            | [pilgrim@digidarshan.in](mailto:pilgrim@digidarshan.in)   | Pilgrim@123  |
+
+---
+
+## API Modules
+
+### Authentication
+
+* User registration
+* Login
+* JWT token generation
+* Role-based access control
+
+### Booking System
+
+* Temple selection
+* Slot booking
+* QR ticket generation
+* Booking status tracking
+
+### Crowd Monitoring
+
+* Live crowd readings
+* Occupancy updates
+* Temple-wise crowd density
+* Admin dashboard integration
+
+### Alert System
+
+* Emergency alert creation
+* Alert broadcasting
+* Pilgrim-side safety notifications
+
+### Scanner System
+
+* QR validation
+* Check-in
+* Check-out
+* Ticket status verification
+
+---
+
+
 ```
 
-Frontend runs at:
+Backend environment variables:
 
-```txt
-http://localhost:3000
-```
-
-## Demo login accounts
-
-Run `python -m app.seed` first.
-
-| Role | Email | Password |
-|---|---|---|
-| Admin | `admin@digidarshan.in` | `Admin@123` |
-| Emergency Operator | `operator@digidarshan.in` | `Operator@123` |
-| Scanner | `scanner@digidarshan.in` | `Scanner@123` |
-| Pilgrim | `pilgrim@digidarshan.in` | `Pilgrim@123` |
-
-## Important API routes
-
-```txt
-GET    /health
-POST   /api/auth/register
-POST   /api/auth/login
-GET    /api/auth/me
-GET    /api/temples
-POST   /api/temples
-GET    /api/slots?temple_id=1
-POST   /api/slots
-POST   /api/bookings
-GET    /api/bookings/me
-POST   /api/crowd/readings
-GET    /api/crowd/readings/{temple_id}
-POST   /api/alerts
-GET    /api/alerts
-PATCH  /api/alerts/{alert_id}/resolve
-GET    /api/mobility/parking?temple_id=1
-PATCH  /api/mobility/parking/{zone_id}
-POST   /api/scanner/check-in
-POST   /api/scanner/check-out
-GET    /api/dashboard/overview
-WS     /ws/temples/{temple_id}
-```
-
-## Deployment plan
-
-### Database
-Use PostgreSQL on Neon, Supabase, Railway, Render, or AWS RDS.
-
-Production `DATABASE_URL` format:
-
-```txt
-postgresql+psycopg2://USER:PASSWORD@HOST:PORT/DB_NAME
-```
-
-### Backend deployment
-Deploy `backend/` on Render, Railway, Fly.io, or AWS.
-
-Set environment variables:
-
-```txt
-DATABASE_URL=postgresql+psycopg2://...
-SECRET_KEY=your-long-secret-key
+```env
+DATABASE_URL=postgresql+psycopg2://USER:PASSWORD@HOST:PORT/DB_NAME
+SECRET_KEY=your-secure-secret-key
 CORS_ORIGINS=https://your-frontend-domain.vercel.app
 ACCESS_TOKEN_EXPIRE_MINUTES=10080
 ```
 
-Build/start command example:
+### Production Database
 
-```bash
-pip install -r requirements.txt
-uvicorn app.main:app --host 0.0.0.0 --port $PORT
+Recommended databases:
+
+```text
+Neon PostgreSQL
+Supabase PostgreSQL
+Railway PostgreSQL
+Render PostgreSQL
 ```
 
-After first deploy, run seed once from the platform shell:
+---
 
-```bash
-python -m app.seed
+## Real-World Impact
+
+Digii-Darshan is designed to support safer and more efficient pilgrimage experiences by reducing overcrowding, improving queue discipline, supporting emergency communication, and making darshan more accessible for senior citizens and differently-abled pilgrims.
+
+### Expected Benefits
+
+* Reduced waiting time for pilgrims.
+* Improved crowd regulation at temple entry points.
+* Faster emergency response.
+* Better accessibility for elderly and differently-abled visitors.
+* Organized parking and traffic flow.
+* Data-driven decision-making for temple authorities.
+* Scalable model for multiple pilgrimage sites.
+
+---
+
+
+
+
+
+## Author
+
+**Ashish Ranjan**
+Full-Stack Developer | AI/ML Enthusiast | Smart India Hackathon Participant
+
+GitHub: [Ashish-Ranjan11](https://github.com/Ashish-Ranjan11)
+
+---
+
+## Repository
+
+```text
+https://github.com/Ashish-Ranjan11/Digi_Darshan
 ```
 
-### Frontend deployment
-Deploy `frontend/` on Vercel.
+---
 
-Set environment variables:
+## License
 
-```txt
-NEXT_PUBLIC_API_URL=https://your-backend-url.onrender.com
-NEXT_PUBLIC_WS_URL=wss://your-backend-url.onrender.com
-```
+This project is developed for educational, innovation, and hackathon purposes.
 
-Build command:
-
-```bash
-npm run build
-```
-
-## Docker local PostgreSQL option
-
-```bash
-cp backend/.env.example backend/.env
-docker compose up --build
-```
-
-Then seed inside backend container or locally with the same database URL.
-
-## Suggested next upgrades
-
-- Add real sensor/IoT ingestion endpoint authentication.
-- Add SMS provider integration for alert messages.
-- Add payment gateway for paid special tickets if required.
-- Add map layer for gates, parking, emergency routes.
-- Add analytics graphs for inflow/outflow and slot demand forecasting.
-- Replace `create_all` with Alembic migrations for production-grade schema management.
