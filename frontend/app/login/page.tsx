@@ -1,91 +1,321 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
-import Nav from "@/components/Nav";
-import { apiFetch, setSession } from "@/lib/api";
-import { User } from "@/lib/types";
+import { useEffect, useState } from "react";
+import gsap from "gsap";
 
-type LoginResponse = { access_token: string; user: User };
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
-const demos = [
-  ["Admin", "admin@digidarshan.in", "Admin@123"],
-  ["Operator", "operator@digidarshan.in", "Operator@123"],
-  ["Scanner", "scanner@digidarshan.in", "Scanner@123"],
-  ["Pilgrim", "pilgrim@digidarshan.in", "Pilgrim@123"]
+type LoginResponse = {
+  access_token: string;
+  token_type: string;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    phone?: string;
+    role: string;
+    assigned_temples?: number[];
+  };
+};
+
+const demoUsers = [
+  {
+    label: "Pilgrim",
+    email: "pilgrim@digidarshan.in",
+    password: "Pilgrim@123",
+    desc: "Book darshan, view QR tickets and check live crowd slots.",
+  },
+  {
+    label: "Admin",
+    email: "admin@digidarshan.in",
+    password: "Admin@123",
+    desc: "Open command center with live crowd, AI prediction and alerts.",
+  },
+  {
+    label: "Scanner",
+    email: "scanner@digidarshan.in",
+    password: "Scanner@123",
+    desc: "Validate QR passes and handle check-in / check-out.",
+  },
+  {
+    label: "Kiosk",
+    email: "kiosk@digidarshan.in",
+    password: "Kiosk@123",
+    desc: "Generate offline QR passes for walk-in pilgrims.",
+  },
 ];
 
+function cleanRole(role?: string) {
+  return String(role || "pilgrim")
+    .replace("UserRole.", "")
+    .replace("Role.", "")
+    .trim()
+    .toLowerCase();
+}
+
+function routeForRole(role?: string) {
+  const r = cleanRole(role);
+
+  if (
+    r === "admin" ||
+    r === "super_admin" ||
+    r === "temple_admin" ||
+    r === "emergency_operator"
+  ) {
+    return "/admin";
+  }
+
+  if (r === "scanner") return "/scanner";
+  if (r === "kiosk_operator") return "/kiosk";
+  if (r === "senior_sathi_volunteer") return "/senior-sathi";
+  if (r === "vip_coordinator") return "/vip";
+
+  return "/dashboard";
+}
+
+function clearSession() {
+  if (typeof window === "undefined") return;
+
+  [
+    "dd_token",
+    "token",
+    "access_token",
+    "digidarshan_token",
+    "authToken",
+    "auth_token",
+    "accessToken",
+    "jwt",
+    "dd_user",
+    "user",
+    "digidarshan_user",
+    "currentUser",
+    "auth_user",
+  ].forEach((key) => localStorage.removeItem(key));
+}
+
+function saveSession(data: LoginResponse) {
+  const user = {
+    ...data.user,
+    role: cleanRole(data.user.role),
+  };
+
+  localStorage.setItem("dd_token", data.access_token);
+  localStorage.setItem("token", data.access_token);
+  localStorage.setItem("access_token", data.access_token);
+  localStorage.setItem("digidarshan_token", data.access_token);
+  localStorage.setItem("authToken", data.access_token);
+  localStorage.setItem("auth_token", data.access_token);
+  localStorage.setItem("accessToken", data.access_token);
+  localStorage.setItem("jwt", data.access_token);
+
+  localStorage.setItem("dd_user", JSON.stringify(user));
+  localStorage.setItem("user", JSON.stringify(user));
+  localStorage.setItem("digidarshan_user", JSON.stringify(user));
+  localStorage.setItem("currentUser", JSON.stringify(user));
+  localStorage.setItem("auth_user", JSON.stringify(user));
+
+  return user;
+}
+
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("pilgrim@digidarshan.in");
   const [password, setPassword] = useState("Pilgrim@123");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
-  async function submit(event: FormEvent) {
-    event.preventDefault();
+  useEffect(() => {
+    clearSession();
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".dd-animate-nav",
+        { opacity: 0, y: -28 },
+        { opacity: 1, y: 0, duration: 0.85, ease: "power3.out" }
+      );
+
+      gsap.fromTo(
+        ".dd-login-intro",
+        { opacity: 0, x: -44, filter: "blur(12px)" },
+        {
+          opacity: 1,
+          x: 0,
+          filter: "blur(0px)",
+          duration: 1,
+          delay: 0.15,
+          ease: "power3.out",
+        }
+      );
+
+      gsap.fromTo(
+        ".dd-login-card",
+        { opacity: 0, y: 44, scale: 0.96 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1,
+          delay: 0.28,
+          ease: "power3.out",
+        }
+      );
+
+      gsap.fromTo(
+        ".dd-demo-grid button",
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.65,
+          stagger: 0.08,
+          delay: 0.55,
+          ease: "power3.out",
+        }
+      );
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  async function handleLogin() {
+    if (loading) return;
+
     setLoading(true);
-    setError("");
+    setMessage("");
+
     try {
-      const data = await apiFetch<LoginResponse>("/api/auth/login", {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
-        body: JSON.stringify({ email, password })
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password,
+        }),
       });
-      setSession(data.access_token, data.user);
-      if (data.user.role === "admin" || data.user.role === "emergency_operator") router.push("/admin");
-      else if (data.user.role === "scanner") router.push("/scanner");
-      else router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.message || "Login failed");
+
+      const data: LoginResponse & { detail?: string; message?: string } =
+        await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || data.message || "Login failed");
+      }
+
+      const user = saveSession(data);
+      const nextRoute = routeForRole(user.role);
+
+      setMessage(`Login successful. Opening ${nextRoute}...`);
+
+      window.setTimeout(() => {
+        window.location.assign(nextRoute);
+      }, 350);
+    } catch (error: any) {
+      clearSession();
+      setMessage(error.message || "Login failed");
     } finally {
       setLoading(false);
     }
   }
 
+  function fillUser(user: (typeof demoUsers)[number]) {
+    setEmail(user.email);
+    setPassword(user.password);
+    setMessage("");
+  }
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-orange-50 to-white">
-      <Nav />
-      <section className="mx-auto grid max-w-6xl gap-8 px-6 py-10 lg:grid-cols-2 lg:items-center">
-        <div>
-          <p className="font-black uppercase tracking-widest text-orange-600">Secure Access</p>
-          <h1 className="mt-3 text-5xl font-black text-temple">Login to Digii-Darshan</h1>
-          <p className="mt-5 text-lg leading-8 text-gray-700">
-            Use role-based dashboards for pilgrims, control-room admins, emergency operators, and QR gate scanners.
+    <main className="dd-login-root">
+      <video
+        className="dd-login-video"
+        src="/videos/digidarshan-hero.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+
+      <div className="dd-login-overlay" />
+      <div className="dd-grain" />
+
+      <header className="dd-landing-nav dd-animate-nav">
+        <Link href="/" className="dd-brand">
+          <span className="dd-brand-mark">⌂</span>
+          <span>
+            <strong>Digii-Darshan</strong>
+            <small>Crowd AI</small>
+          </span>
+        </Link>
+
+        <nav>
+          <Link href="/">Home</Link>
+          <Link href="/login">Login</Link>
+          <Link href="/register">Register</Link>
+        </nav>
+      </header>
+
+      <section className="dd-login-shell">
+        <div className="dd-login-intro">
+          <p>Role Based Access</p>
+
+          <h1>
+            Enter the correct
+            <span> command portal.</span>
+          </h1>
+
+          <p className="dd-login-desc">
+            Pilgrims, admins, kiosk operators and scanner staff each open their
+            own dedicated dashboard after login.
           </p>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            {demos.map(([label, mail, pass]) => (
-              <button
-                type="button"
-                key={label}
-                onClick={() => {
-                  setEmail(mail);
-                  setPassword(pass);
-                }}
-                className="rounded-2xl border border-orange-100 bg-white p-4 text-left shadow-sm transition hover:border-orange-300"
-              >
-                <p className="font-black text-temple">{label}</p>
-                <p className="mt-1 text-xs text-gray-500">{mail}</p>
+
+          <div className="dd-demo-grid">
+            {demoUsers.map((user) => (
+              <button key={user.email} onClick={() => fillUser(user)} type="button">
+                <strong>{user.label}</strong>
+                <span>{user.desc}</span>
+                <small>{user.email}</small>
               </button>
             ))}
           </div>
         </div>
 
-        <form onSubmit={submit} className="card p-7">
-          <h2 className="text-2xl font-black text-temple">Welcome back</h2>
-          <p className="mt-1 text-sm text-gray-500">Enter credentials or click a demo account.</p>
-          <label className="mt-6 block text-sm font-bold text-gray-700">Email</label>
-          <input className="input mt-2" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <label className="mt-4 block text-sm font-bold text-gray-700">Password</label>
-          <input className="input mt-2" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          {error ? <p className="mt-4 rounded-2xl bg-red-50 p-3 text-sm font-bold text-red-700">{error}</p> : null}
-          <button disabled={loading} className="btn-primary mt-6 w-full" type="submit">
-            {loading ? "Logging in..." : "Login"}
-          </button>
-          <p className="mt-5 text-center text-sm text-gray-600">
-            New pilgrim? <Link className="font-black text-orange-700" href="/register">Create account</Link>
+        <div className="dd-login-card">
+          <p className="dd-login-label">Login</p>
+
+          <h2>Access dashboard</h2>
+
+          {message ? <div className="dd-login-message">{message}</div> : null}
+
+          <div>
+            <label>Email</label>
+            <input
+              value={email}
+              type="email"
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+            />
+
+            <label>Password</label>
+            <input
+              value={password}
+              type="password"
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="current-password"
+              onKeyDown={(event) => {
+                if (event.key === "Enter") handleLogin();
+              }}
+            />
+
+            <button disabled={loading} type="button" onClick={handleLogin}>
+              {loading ? "Authenticating..." : "Enter Portal"}
+            </button>
+          </div>
+
+          <p className="dd-register-line">
+            New pilgrim? <Link href="/register">Create account</Link>
           </p>
-        </form>
+        </div>
       </section>
     </main>
   );

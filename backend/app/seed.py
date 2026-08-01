@@ -1,171 +1,496 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 from app.database import Base, SessionLocal, engine
-from app.models import ParkingZone, Temple, TimeSlot, TransportRoute, User, UserRole
+from app.models import (
+    Alert,
+    AlertSeverity,
+    Booking,
+    BookingSource,
+    BookingStatus,
+    BookingVisitor,
+    CrowdReading,
+    Notification,
+    ParkingZone,
+    Temple,
+    TempleStaff,
+    TimeSlot,
+    TransportRoute,
+    User,
+    UserRole,
+    VisitPurpose,
+)
 from app.security import get_password_hash
 
-Base.metadata.create_all(bind=engine)
 
+def create_user(db, name, email, role, password, phone=None):
+    existing = db.query(User).filter(User.email == email.lower()).first()
 
-def create_user(db, name, email, role, password="Password@123", phone=None):
-    user = db.query(User).filter(User.email == email).first()
-    if user:
-        return user
+    if existing:
+        return existing
+
     user = User(
         name=name,
-        email=email,
+        email=email.lower(),
         phone=phone,
         role=role,
         password_hash=get_password_hash(password),
+        is_active=True,
     )
+
     db.add(user)
     db.commit()
+    db.refresh(user)
+
     return user
 
 
-def create_temple(db, **kwargs):
-    temple = db.query(Temple).filter(Temple.name == kwargs["name"]).first()
-    if temple:
-        return temple
-    temple = Temple(**kwargs)
+def create_temple(
+    db,
+    name,
+    city,
+    code,
+    max_capacity,
+    safe_capacity,
+    current_occupancy,
+    entry_gates,
+    exit_gates,
+):
+    existing = db.query(Temple).filter(Temple.temple_code == code).first()
+
+    if existing:
+        return existing
+
+    temple = Temple(
+        name=name,
+        city=city,
+        state="Gujarat",
+        temple_code=code,
+        description=f"{name} smart pilgrimage management zone.",
+        official_website=None,
+        max_capacity=max_capacity,
+        safe_capacity=safe_capacity,
+        current_occupancy=current_occupancy,
+        entry_gates=entry_gates,
+        exit_gates=exit_gates,
+        emergency_contact="108",
+        is_active=True,
+    )
+
     db.add(temple)
     db.commit()
     db.refresh(temple)
+
     return temple
 
 
+def assign_staff(db, user, temple, role, department=None, gate=None):
+    existing = (
+        db.query(TempleStaff)
+        .filter(TempleStaff.user_id == user.id)
+        .filter(TempleStaff.temple_id == temple.id)
+        .first()
+    )
+
+    if existing:
+        return existing
+
+    assignment = TempleStaff(
+        temple_id=temple.id,
+        user_id=user.id,
+        role=role,
+        department=department,
+        gate_assigned=gate,
+        is_active=True,
+    )
+
+    db.add(assignment)
+    db.commit()
+    db.refresh(assignment)
+
+    return assignment
+
+
+def create_slots(db, temple):
+    now = datetime.now()
+    today = now.date()
+
+    for day_offset in range(7):
+        target_date = today + timedelta(days=day_offset)
+
+        for hour in range(6, 18):
+            start_time = datetime.combine(target_date, datetime.min.time()).replace(
+                hour=hour
+            )
+            end_time = start_time + timedelta(hours=1)
+
+            existing = (
+                db.query(TimeSlot)
+                .filter(TimeSlot.temple_id == temple.id)
+                .filter(TimeSlot.start_time == start_time)
+                .first()
+            )
+
+            if existing:
+                continue
+
+            slot = TimeSlot(
+                temple_id=temple.id,
+                start_time=start_time,
+                end_time=end_time,
+                capacity=300,
+                booked_count=0,
+                senior_reserved_capacity=40,
+                senior_booked_count=0,
+                slot_type="normal",
+                is_festival_slot=False,
+                is_vip_blocked=False,
+                is_active=True,
+            )
+
+            db.add(slot)
+
+    db.commit()
+
+
+def create_parking(db, temple):
+    zones = [
+        ("Main Parking", 500, 420, "300m from temple"),
+        ("Bus Parking", 300, 260, "700m from temple"),
+        ("SeniorSathi Parking", 80, 70, "Near priority entry"),
+    ]
+
+    for name, total, available, distance in zones:
+        existing = (
+            db.query(ParkingZone)
+            .filter(ParkingZone.temple_id == temple.id)
+            .filter(ParkingZone.name == name)
+            .first()
+        )
+
+        if existing:
+            continue
+
+        zone = ParkingZone(
+            temple_id=temple.id,
+            name=name,
+            total_slots=total,
+            available_slots=available,
+            distance_label=distance,
+            route_hint="Follow Digii-Flowmaster parking guidance.",
+        )
+
+        db.add(zone)
+
+    db.commit()
+
+
+def create_transport(db, temple):
+    existing = db.query(TransportRoute).filter(
+        TransportRoute.temple_id == temple.id
+    ).first()
+
+    if existing:
+        return
+
+    routes = [
+        ("Temple Shuttle A", "shuttle", "Main Parking", "Temple Gate A", 10),
+        ("SeniorSathi Shuttle", "shuttle", "SeniorSathi Parking", "Priority Gate", 8),
+    ]
+
+    for name, mode, start, end, frequency in routes:
+        route = TransportRoute(
+            temple_id=temple.id,
+            name=name,
+            mode=mode,
+            start_point=start,
+            end_point=end,
+            frequency_minutes=frequency,
+            status="On time",
+            notes="Demo transport route.",
+        )
+
+        db.add(route)
+
+    db.commit()
+
+
+def create_initial_crowd(db, temple):
+    existing = db.query(CrowdReading).filter(
+        CrowdReading.temple_id == temple.id
+    ).first()
+
+    if existing:
+        return
+
+    reading = CrowdReading(
+        temple_id=temple.id,
+        source="seed_demo",
+        occupancy=temple.current_occupancy,
+        inflow_per_min=25,
+        outflow_per_min=18,
+        density_score=0.35,
+        gate="Gate A",
+        zone="Main Queue",
+        confidence=0.9,
+        notes="Initial demo crowd reading.",
+    )
+
+    db.add(reading)
+    db.commit()
+
+
+def create_demo_booking(db, pilgrim, temple):
+    existing = db.query(Booking).filter(Booking.user_id == pilgrim.id).first()
+
+    if existing:
+        return existing
+
+    slot = (
+        db.query(TimeSlot)
+        .filter(TimeSlot.temple_id == temple.id)
+        .filter(TimeSlot.end_time >= datetime.now())
+        .order_by(TimeSlot.start_time.asc())
+        .first()
+    )
+
+    if not slot:
+        return None
+
+    booking = Booking(
+        user_id=pilgrim.id,
+        temple_id=temple.id,
+        slot_id=slot.id,
+        ticket_code=f"{temple.temple_code}-DEMO12345",
+        source=BookingSource.online,
+        visit_purpose=VisitPurpose.darshan,
+        primary_name=pilgrim.name,
+        primary_age=22,
+        primary_gender="Male",
+        primary_phone=pilgrim.phone,
+        primary_email=pilgrim.email,
+        city="Ahmedabad",
+        state="Gujarat",
+        visitor_count=2,
+        senior_count=0,
+        differently_abled_count=0,
+        arrival_mode="Bus",
+        expected_duration_minutes=30,
+        preferred_language="Hindi",
+        needs_assistance=False,
+        status=BookingStatus.booked,
+        gate="Gate A",
+        ticket_sent_to=pilgrim.email,
+        booking_notes="Demo booking.",
+        created_by_id=pilgrim.id,
+    )
+
+    slot.booked_count += 2
+
+    db.add(booking)
+    db.flush()
+
+    visitor = BookingVisitor(
+        booking_id=booking.id,
+        full_name=pilgrim.name,
+        age=22,
+        gender="Male",
+        phone=pilgrim.phone,
+        is_senior=False,
+        is_differently_abled=False,
+        needs_wheelchair=False,
+    )
+
+    db.add(visitor)
+
+    notification = Notification(
+        user_id=pilgrim.id,
+        temple_id=temple.id,
+        title="Demo ticket confirmed",
+        message=f"Your demo ticket {booking.ticket_code} is confirmed.",
+    )
+
+    db.add(notification)
+    db.commit()
+    db.refresh(booking)
+
+    return booking
+
+
+def create_alert(db, temple, admin):
+    existing = db.query(Alert).filter(Alert.temple_id == temple.id).first()
+
+    if existing:
+        return
+
+    alert = Alert(
+        temple_id=temple.id,
+        title="Demo crowd advisory",
+        message="Moderate crowd near main queue zone.",
+        severity=AlertSeverity.info,
+        location="Main Queue",
+        instruction="Please follow queue marshal instructions.",
+        created_by_id=admin.id,
+    )
+
+    db.add(alert)
+    db.commit()
+
+
 def seed():
+    Base.metadata.create_all(bind=engine)
+
     db = SessionLocal()
+
     try:
-        create_user(db, "System Admin", "admin@digidarshan.in", UserRole.admin, "Admin@123")
-        create_user(db, "Emergency Operator", "operator@digidarshan.in", UserRole.emergency_operator, "Operator@123")
-        create_user(db, "Gate Scanner", "scanner@digidarshan.in", UserRole.scanner, "Scanner@123")
-        create_user(db, "Demo Pilgrim", "pilgrim@digidarshan.in", UserRole.pilgrim, "Pilgrim@123", "9999999999")
+        admin = create_user(
+            db,
+            "System Admin",
+            "admin@digidarshan.in",
+            UserRole.admin,
+            "Admin@123",
+            "9000000001",
+        )
 
-        temples = [
-            create_temple(
-                db,
-                name="Somnath Temple",
-                city="Somnath",
-                description="Live queue and crowd safety management for Somnath pilgrimage visitors.",
-                latitude=20.888,
-                longitude=70.401,
-                max_capacity=8000,
-                current_occupancy=2100,
-                entry_gates=4,
-                exit_gates=3,
-                emergency_contact="108",
-            ),
-            create_temple(
-                db,
-                name="Dwarkadhish Temple",
-                city="Dwarka",
-                description="Slot-based darshan, parking, and transport coordination for Dwarka.",
-                latitude=22.239,
-                longitude=68.967,
-                max_capacity=6500,
-                current_occupancy=1800,
-                entry_gates=3,
-                exit_gates=3,
-                emergency_contact="108",
-            ),
-            create_temple(
-                db,
-                name="Ambaji Temple",
-                city="Ambaji",
-                description="SeniorSathi priority windows and festival crowd regulation for Ambaji.",
-                latitude=24.331,
-                longitude=72.851,
-                max_capacity=7000,
-                current_occupancy=2600,
-                entry_gates=4,
-                exit_gates=4,
-                emergency_contact="108",
-            ),
-            create_temple(
-                db,
-                name="Pavagadh Kalika Mata Temple",
-                city="Pavagadh",
-                description="Route guidance, queue heat tracking, and emergency alerts for Pavagadh.",
-                latitude=22.466,
-                longitude=73.503,
-                max_capacity=5000,
-                current_occupancy=1200,
-                entry_gates=2,
-                exit_gates=2,
-                emergency_contact="108",
-            ),
-        ]
+        super_admin = create_user(
+            db,
+            "State Super Admin",
+            "superadmin@digidarshan.in",
+            UserRole.super_admin,
+            "Super@123",
+            "9000000002",
+        )
 
-        now = datetime.now(timezone.utc).replace(minute=0, second=0, microsecond=0)
+        pilgrim = create_user(
+            db,
+            "Demo Pilgrim",
+            "pilgrim@digidarshan.in",
+            UserRole.pilgrim,
+            "Pilgrim@123",
+            "9000000003",
+        )
+
+        scanner = create_user(
+            db,
+            "Scanner Staff",
+            "scanner@digidarshan.in",
+            UserRole.scanner,
+            "Scanner@123",
+            "9000000004",
+        )
+
+        operator = create_user(
+            db,
+            "Crowd Operator",
+            "operator@digidarshan.in",
+            UserRole.emergency_operator,
+            "Operator@123",
+            "9000000005",
+        )
+
+        kiosk = create_user(
+            db,
+            "Kiosk Operator",
+            "kiosk@digidarshan.in",
+            UserRole.kiosk_operator,
+            "Kiosk@123",
+            "9000000006",
+        )
+
+        volunteer = create_user(
+            db,
+            "SeniorSathi Volunteer",
+            "volunteer@digidarshan.in",
+            UserRole.senior_sathi_volunteer,
+            "Volunteer@123",
+            "9000000007",
+        )
+
+        vip = create_user(
+            db,
+            "VIP Coordinator",
+            "vip@digidarshan.in",
+            UserRole.vip_coordinator,
+            "Vip@123",
+            "9000000008",
+        )
+
+        somnath = create_temple(
+            db,
+            "Somnath Temple",
+            "Somnath",
+            "SOM",
+            10000,
+            7000,
+            1800,
+            4,
+            4,
+        )
+
+        dwarka = create_temple(
+            db,
+            "Dwarkadhish Temple",
+            "Dwarka",
+            "DWA",
+            8000,
+            5500,
+            1200,
+            3,
+            3,
+        )
+
+        ambaji = create_temple(
+            db,
+            "Ambaji Temple",
+            "Ambaji",
+            "AMB",
+            9000,
+            6000,
+            1500,
+            4,
+            4,
+        )
+
+        pavagadh = create_temple(
+            db,
+            "Pavagadh Kalika Mata Temple",
+            "Pavagadh",
+            "PAV",
+            7000,
+            4500,
+            900,
+            3,
+            3,
+        )
+
+        temples = [somnath, dwarka, ambaji, pavagadh]
+
         for temple in temples:
-            if not db.query(TimeSlot).filter(TimeSlot.temple_id == temple.id).first():
-                for day in range(0, 5):
-                    for hour in [7, 9, 11, 15, 17, 19]:
-                        start = (now + timedelta(days=day)).replace(hour=hour)
-                        end = start + timedelta(hours=1)
-                        capacity = 250 if hour in [7, 15] else 350
-                        db.add(
-                            TimeSlot(
-                                temple_id=temple.id,
-                                start_time=start,
-                                end_time=end,
-                                capacity=capacity,
-                                senior_reserved_capacity=40,
-                            )
-                        )
-            if not db.query(ParkingZone).filter(ParkingZone.temple_id == temple.id).first():
-                db.add_all(
-                    [
-                        ParkingZone(
-                            temple_id=temple.id,
-                            name="North Parking",
-                            total_slots=300,
-                            available_slots=180,
-                            distance_label="450 m from main gate",
-                            route_hint="Use Gate A pedestrian corridor.",
-                        ),
-                        ParkingZone(
-                            temple_id=temple.id,
-                            name="Shuttle Parking",
-                            total_slots=600,
-                            available_slots=420,
-                            distance_label="1.8 km with shuttle",
-                            route_hint="Board free shuttle every 10 minutes.",
-                        ),
-                    ]
-                )
-            if not db.query(TransportRoute).filter(TransportRoute.temple_id == temple.id).first():
-                db.add_all(
-                    [
-                        TransportRoute(
-                            temple_id=temple.id,
-                            name="Station Shuttle",
-                            mode="shuttle",
-                            start_point="Railway/Bus Station",
-                            end_point="Temple Gate A",
-                            frequency_minutes=15,
-                            status="On time",
-                            notes="Recommended during peak hours.",
-                        ),
-                        TransportRoute(
-                            temple_id=temple.id,
-                            name="Emergency Corridor",
-                            mode="emergency",
-                            start_point="Medical Camp",
-                            end_point="Emergency Gate",
-                            frequency_minutes=5,
-                            status="Clear",
-                            notes="Reserved for police, ambulance, and rescue teams.",
-                        ),
-                    ]
-                )
-        db.commit()
-        print("Seed completed")
-        print("Admin: admin@digidarshan.in / Admin@123")
-        print("Operator: operator@digidarshan.in / Operator@123")
-        print("Scanner: scanner@digidarshan.in / Scanner@123")
-        print("Pilgrim: pilgrim@digidarshan.in / Pilgrim@123")
+            create_slots(db, temple)
+            create_parking(db, temple)
+            create_transport(db, temple)
+            create_initial_crowd(db, temple)
+
+            assign_staff(db, scanner, temple, UserRole.scanner, "Gate Scanning", "Gate A")
+            assign_staff(db, operator, temple, UserRole.emergency_operator, "Control Room")
+            assign_staff(db, kiosk, temple, UserRole.kiosk_operator, "Helpdesk")
+            assign_staff(db, volunteer, temple, UserRole.senior_sathi_volunteer, "SeniorSathi")
+            assign_staff(db, vip, temple, UserRole.vip_coordinator, "VIP Movement")
+
+        create_demo_booking(db, pilgrim, somnath)
+        create_alert(db, somnath, admin)
+
+        print("Seed completed successfully.")
+        print("")
+        print("Demo logins:")
+        print("admin@digidarshan.in / Admin@123")
+        print("superadmin@digidarshan.in / Super@123")
+        print("pilgrim@digidarshan.in / Pilgrim@123")
+        print("scanner@digidarshan.in / Scanner@123")
+        print("operator@digidarshan.in / Operator@123")
+        print("kiosk@digidarshan.in / Kiosk@123")
+        print("volunteer@digidarshan.in / Volunteer@123")
+        print("vip@digidarshan.in / Vip@123")
+
     finally:
         db.close()
 

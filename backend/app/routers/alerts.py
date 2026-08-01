@@ -1,3 +1,4 @@
+
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -27,7 +28,16 @@ def serialize_alert(alert: Alert) -> dict:
         "temple_name": alert.temple.name if alert.temple else None,
     }
 
+@router.get("/active", response_model=list[AlertOut])
+def active_alerts(db: Session = Depends(get_db)):
+    query = (
+        db.query(Alert)
+        .options(joinedload(Alert.temple))
+        .filter(Alert.status == AlertStatus.active)
+        .order_by(Alert.created_at.desc())
+    )
 
+    return [serialize_alert(alert) for alert in query.limit(100).all()]
 @router.get("", response_model=list[AlertOut])
 def list_alerts(active_only: bool = True, db: Session = Depends(get_db)):
     query = db.query(Alert).options(joinedload(Alert.temple)).order_by(Alert.created_at.desc())

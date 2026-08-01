@@ -24,10 +24,13 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title=settings.PROJECT_NAME, version="1.0.0")
 
+# Local development CORS
+# Allows frontend from localhost / 127.0.0.1 on any port.
+# JWT auth uses Authorization header, not browser cookies, so credentials are false.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_list,
-    allow_credentials=True,
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

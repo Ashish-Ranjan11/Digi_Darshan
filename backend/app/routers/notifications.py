@@ -18,3 +18,15 @@ def list_notifications(db: Session = Depends(get_db), current_user: User = Depen
         .limit(50)
         .all()
     )
+@router.get("/me", response_model=list[NotificationOut])
+def my_notifications(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return (
+        db.query(Notification)
+        .filter((Notification.user_id == current_user.id) | (Notification.user_id.is_(None)))
+        .order_by(Notification.created_at.desc())
+        .limit(50)
+        .all()
+    )

@@ -1,108 +1,399 @@
+"use client";
+
 import Link from "next/link";
-import Nav from "@/components/Nav";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 
 const modules = [
   {
-    title: "DigiiQueue & E-Ticketing",
-    text: "Pilgrims choose darshan time slots, receive digital tokens, and track queue position before reaching the temple."
+    title: "DigiQueue",
+    tag: "Booking Layer",
+    desc: "QR darshan booking, slot allocation, kiosk passes and scanner validation.",
   },
   {
-    title: "Digii-CrowdControl",
-    text: "Authorities monitor live occupancy, density level, slot utilisation, and gate movement from a single dashboard."
+    title: "CrowdControl",
+    tag: "Live Density",
+    desc: "Real-time occupancy, inflow-outflow, pressure status and crowd risk.",
   },
   {
-    title: "Digii-Suraksha",
-    text: "Emergency operators create instant alerts with clear safety instructions for panic, medical, or congestion events."
+    title: "AI Prediction",
+    tag: "Forecast Engine",
+    desc: "Predictive temple crowd intelligence for upcoming slot pressure and congestion.",
   },
   {
-    title: "Digii-Flowmaster",
-    text: "Parking availability, shuttle routes, traffic hints, and alternate routes reduce congestion near pilgrimage areas."
+    title: "Digi Suraksha",
+    tag: "Emergency Layer",
+    desc: "SOS alerts, emergency response, safety routing and command escalation.",
+  },
+  {
+    title: "Flowmaster",
+    tag: "Movement Control",
+    desc: "Gate pressure, route diversion, parking control and crowd-flow actions.",
   },
   {
     title: "SeniorSathi",
-    text: "Senior citizens and differently-abled pilgrims receive priority slots, safer gates, and family-friendly booking support."
-  }
+    tag: "Assisted Darshan",
+    desc: "Priority support for senior citizens and differently-abled pilgrims.",
+  },
 ];
 
-const temples = ["Somnath", "Dwarka", "Ambaji", "Pavagadh"];
+const flow = [
+  "Pilgrim books QR darshan slot",
+  "Live crowd engine checks temple density",
+  "AI predicts risk and pressure zones",
+  "Scanner validates check-in and check-out",
+  "Admin triggers route and gate actions",
+  "SOS and SeniorSathi teams respond",
+];
 
-export default function Home() {
+function IntelligenceCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+
+    if (!canvas || !ctx) return;
+
+    let raf = 0;
+    let time = 0;
+
+    const particles = Array.from({ length: 58 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      vx: (Math.random() - 0.5) * 0.00042,
+      vy: (Math.random() - 0.5) * 0.00042,
+      r: Math.random() * 1.7 + 0.5,
+      glow: Math.random() * Math.PI * 2,
+    }));
+
+    function resize() {
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * ratio;
+      canvas.height = window.innerHeight * ratio;
+    }
+
+    function draw() {
+      const ratio = window.devicePixelRatio || 1;
+      const width = canvas.width;
+      const height = canvas.height;
+
+      time += 0.012;
+
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach((point, index) => {
+        point.x += point.vx;
+        point.y += point.vy;
+
+        if (point.x < 0.02 || point.x > 0.98) point.vx *= -1;
+        if (point.y < 0.02 || point.y > 0.98) point.vy *= -1;
+
+        const x = point.x * width;
+        const y = point.y * height;
+        const pulse = 0.18 + Math.sin(time + point.glow) * 0.12;
+
+        ctx.beginPath();
+        ctx.arc(x, y, point.r * ratio, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(214, 196, 166, ${0.24 + pulse})`;
+        ctx.fill();
+
+        for (let j = index + 1; j < particles.length; j++) {
+          const next = particles[j];
+          const nx = next.x * width;
+          const ny = next.y * height;
+          const dx = x - nx;
+          const dy = y - ny;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const limit = 150 * ratio;
+
+          if (distance < limit) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(nx, ny);
+            ctx.strokeStyle = `rgba(214, 196, 166, ${
+              0.09 * (1 - distance / limit)
+            })`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      });
+
+      raf = requestAnimationFrame(draw);
+    }
+
+    resize();
+    draw();
+
+    window.addEventListener("resize", resize);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="ddx-canvas" />;
+}
+
+export default function HomePage() {
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".ddx-nav",
+        { opacity: 0, y: -28 },
+        { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" }
+      );
+
+      gsap.fromTo(
+        ".ddx-kicker",
+        { opacity: 0, y: 22, filter: "blur(12px)" },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.9,
+          delay: 0.15,
+          ease: "power3.out",
+        }
+      );
+
+      gsap.fromTo(
+        ".ddx-title-part",
+        { opacity: 0, y: 90, filter: "blur(18px)" },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1.18,
+          stagger: 0.1,
+          delay: 0.28,
+          ease: "power4.out",
+        }
+      );
+
+      gsap.fromTo(
+        ".ddx-hero-reveal",
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.86,
+          stagger: 0.08,
+          delay: 0.88,
+          ease: "power3.out",
+        }
+      );
+
+      gsap.to(".ddx-glow", {
+        scale: 1.08,
+        opacity: 0.78,
+        duration: 3.8,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      gsap.to(".ddx-scan-line", {
+        xPercent: 24,
+        duration: 7,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      gsap.set(".ddx-reveal", {
+        opacity: 0,
+        y: 56,
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            gsap.to(entry.target, {
+              opacity: 1,
+              y: 0,
+              duration: 0.85,
+              ease: "power3.out",
+            });
+
+            observer.unobserve(entry.target);
+          });
+        },
+        {
+          threshold: 0.18,
+        }
+      );
+
+      document.querySelectorAll(".ddx-reveal").forEach((el) => {
+        observer.observe(el);
+      });
+
+      return () => observer.disconnect();
+    });
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,#fed7aa,transparent_35%),linear-gradient(180deg,#fff7ed,#ffffff)]">
-      <Nav />
+    <main className="ddx-root">
+      <video
+        className="ddx-video"
+        src="/videos/digidarshan-hero.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-6 pb-16 pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-        <div>
-          <div className="mb-5 inline-flex rounded-full border border-orange-200 bg-white/80 px-4 py-2 text-sm font-bold text-orange-700">
-            SIH 2025 • Temple & Pilgrimage Crowd Management
-          </div>
-          <h1 className="text-5xl font-black leading-tight text-temple md:text-7xl">
-            Digii-Darshan for safer, smoother, smarter devotion.
+      <div className="ddx-vignette" />
+      <div className="ddx-bottom-fade" />
+      <div className="ddx-grain" />
+      <IntelligenceCanvas />
+
+      <header className="ddx-nav">
+        <Link href="/" className="ddx-brand">
+          <span className="ddx-brand-icon">⌂</span>
+
+          <span>
+            <strong>Digii-Darshan</strong>
+            <small>Crowd AI</small>
+          </span>
+        </Link>
+
+        <nav>
+          <Link href="/">Home</Link>
+          <Link href="/login">Login</Link>
+          <Link href="/register">Register</Link>
+        </nav>
+      </header>
+
+      <section className="ddx-hero">
+        <div className="ddx-glow" />
+
+        <div className="ddx-hero-inner">
+          <p className="ddx-kicker">AI Temple Crowd Intelligence</p>
+
+          <h1 className="ddx-title">
+            <span className="ddx-title-part">DIGII</span>
+            <strong className="ddx-title-part">DARSHAN</strong>
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-700">
-            A deployable web platform for Gujarat pilgrimage sites that combines slot-based e-ticketing, live crowd monitoring, emergency alerts, parking guidance, and senior-friendly darshan support.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link className="btn-primary" href="/register">Book Darshan</Link>
-            <Link className="btn-secondary" href="/admin">Open Control Room</Link>
-          </div>
-          <div className="mt-8 flex flex-wrap gap-3">
-            {temples.map((temple) => (
-              <span key={temple} className="rounded-full bg-white px-4 py-2 text-sm font-bold text-gray-700 shadow">
-                {temple}
-              </span>
-            ))}
-          </div>
-        </div>
 
-        <div className="card relative p-6">
-          <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-orange-200 blur-2xl" />
-          <div className="rounded-3xl bg-gradient-to-br from-orange-600 to-amber-500 p-6 text-white">
-            <p className="text-sm font-bold uppercase tracking-widest text-orange-100">Live Temple Snapshot</p>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl bg-white/15 p-5 backdrop-blur">
-                <p className="text-sm text-orange-100">Current Occupancy</p>
-                <p className="mt-2 text-4xl font-black">42%</p>
-              </div>
-              <div className="rounded-2xl bg-white/15 p-5 backdrop-blur">
-                <p className="text-sm text-orange-100">Queue Delay</p>
-                <p className="mt-2 text-4xl font-black">18m</p>
-              </div>
-              <div className="rounded-2xl bg-white/15 p-5 backdrop-blur">
-                <p className="text-sm text-orange-100">Parking Open</p>
-                <p className="mt-2 text-4xl font-black">600+</p>
-              </div>
-              <div className="rounded-2xl bg-white/15 p-5 backdrop-blur">
-                <p className="text-sm text-orange-100">Alert Level</p>
-                <p className="mt-2 text-4xl font-black">Low</p>
-              </div>
-            </div>
-          </div>
-          <div className="mt-5 rounded-3xl border border-orange-100 bg-orange-50 p-5">
-            <p className="font-black text-temple">How it works</p>
-            <ol className="mt-3 space-y-2 text-sm text-gray-700">
-              <li>1. Pilgrim selects temple and time slot.</li>
-              <li>2. System issues QR ticket and gate suggestion.</li>
-              <li>3. Control room monitors occupancy and alerts.</li>
-              <li>4. Scanner check-in/out updates live crowd count.</li>
-            </ol>
+          <p className="ddx-subtitle ddx-hero-reveal">
+            Smart Pilgrimage Command System
+          </p>
+
+          <p className="ddx-copy ddx-hero-reveal">
+            QR darshan booking, live crowd prediction, gate-flow control,
+            emergency response, SeniorSathi support and AI-guided temple
+            operations.
+          </p>
+
+          <div className="ddx-actions ddx-hero-reveal">
+            <Link href="/login">Enter Portal</Link>
+            <a href="#architecture">Explore Architecture</a>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-20">
-        <div className="mb-8 max-w-3xl">
-          <p className="font-black uppercase tracking-widest text-orange-600">Feature Modules</p>
-          <h2 className="mt-2 text-3xl font-black text-temple md:text-5xl">Everything needed for the MVP demo.</h2>
+      <section id="architecture" className="ddx-architecture">
+        <div className="ddx-scan-line" />
+
+        <div className="ddx-section-head ddx-reveal">
+          <p>Platform Architecture</p>
+
+          <h2>
+            A real-time operating system
+            <span>for pilgrimage crowd intelligence.</span>
+          </h2>
         </div>
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {modules.map((item) => (
-            <div key={item.title} className="card p-6">
-              <div className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-orange-100 text-xl">✦</div>
-              <h3 className="text-xl font-black text-temple">{item.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-gray-600">{item.text}</p>
-            </div>
+
+        <div className="ddx-command-grid">
+          <div className="ddx-command-card ddx-reveal">
+            <p className="ddx-mini">Command Flow</p>
+
+            <h3>
+              Every booking, movement and alert becomes visible before pressure
+              becomes danger.
+            </h3>
+
+            <p>
+              Digii-Darshan connects pilgrim booking, kiosk counters, scanner
+              gates, admin control rooms, SOS response and SeniorSathi support
+              into one live intelligence layer.
+            </p>
+          </div>
+
+          <div className="ddx-flow-card ddx-reveal">
+            {flow.map((item, index) => (
+              <div className="ddx-flow-row" key={item}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <p>{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="ddx-module-grid">
+          {modules.map((module, index) => (
+            <article className="ddx-module ddx-reveal" key={module.title}>
+              <small>{module.tag}</small>
+              <h3>{module.title}</h3>
+              <p>{module.desc}</p>
+              <b>{String(index + 1).padStart(2, "0")}</b>
+            </article>
           ))}
+        </div>
+      </section>
+
+      <section className="ddx-intelligence">
+        <div className="ddx-intel-inner ddx-reveal">
+          <div>
+            <p className="ddx-mini">Intelligence Layer</p>
+
+            <h2>Live crowd status, AI predictions, heatmaps and SOS alerts.</h2>
+          </div>
+
+          <div className="ddx-stats">
+            <div>
+              <strong>04</strong>
+              <span>Temple Panels</span>
+            </div>
+
+            <div>
+              <strong>06</strong>
+              <span>Core Modules</span>
+            </div>
+
+            <div>
+              <strong>24/7</strong>
+              <span>Command View</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="ddx-footer">
+        <video
+          className="ddx-footer-video"
+          src="/videos/digidarshan-hero.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+
+        <div className="ddx-footer-overlay" />
+
+        <div className="ddx-footer-content ddx-reveal">
+          <p>Live Prototype</p>
+
+          <h2>Built for crowd intelligence, not just ticket booking.</h2>
+
+          <Link href="/login">Launch Digii-Darshan</Link>
         </div>
       </section>
     </main>

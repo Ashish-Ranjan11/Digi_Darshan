@@ -16,7 +16,14 @@ def get_realtime_analysis(
     temple_id: int,
     window_minutes: int = Query(default=30, ge=5, le=240),
     db: Session = Depends(get_db),
-    _: User = Depends(require_roles(UserRole.admin, UserRole.emergency_operator)),
+    current_user: User = Depends(
+    require_roles(
+        UserRole.admin,
+        UserRole.emergency_operator,
+        UserRole.scanner,
+        UserRole.pilgrim,
+    )
+),
 ):
     temple = db.get(Temple, temple_id)
 

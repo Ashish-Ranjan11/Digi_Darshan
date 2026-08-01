@@ -1,13 +1,21 @@
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from jose import JWTError, jwt
+from jose import jwt
 from passlib.context import CryptContext
 
 from app.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-ALGORITHM = "HS256"
+
+
+def get_setting(name: str, default: Any):
+    return getattr(settings, name, default)
+
+
+SECRET_KEY = get_setting("SECRET_KEY", "digidarshan-dev-secret-key")
+ALGORITHM = get_setting("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = get_setting("ACCESS_TOKEN_EXPIRE_MINUTES", 60 * 24)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -18,16 +26,17 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def create_access_token(subject: str | int, extra: dict[str, Any] | None = None) -> str:
-    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode: dict[str, Any] = {"sub": str(subject), "exp": expire}
-    if extra:
-        to_encode.update(extra)
-    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
+def create_access_token(subject: int | str, extra_claims: dict | None = None) -> str:
+    expire = datetime.now(timezone.utc) + timedelta(
+        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+    )
 
+    payload = {
+        "sub": str(subject),
+        "exp": expire,
+    }
 
-def decode_access_token(token: str) -> dict[str, Any]:
-    try:
-        return jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
-    except JWTError as exc:
-        raise ValueError("Invalid token") from exc
+    if extra_claims:
+        payload.update(extra_claims)
+
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
