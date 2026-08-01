@@ -1,290 +1,363 @@
-# Digii-Darshan — Smart Pilgrimage & Temple Crowd Management System
+# 🛕 Digi-Darshan: Safe Devotion. Smart Pilgrimage.
 
-**Digii-Darshan** is a full-stack web platform designed to improve crowd regulation, queue management, emergency response, and accessibility across high-footfall temples and pilgrimage sites. The project was developed for **Smart India Hackathon 2025**, under the problem statement **Temple & Pilgrimage Crowd Management — Somnath, Dwarka, Ambaji, and Pavagadh**.
+> **An AI-Powered Intelligent Temple Management & Smart Pilgrimage Platform**
 
-The platform provides a digital ecosystem where pilgrims can book darshan slots, receive QR-based e-tickets, track queue status, access parking and route guidance, and receive emergency alerts. Temple authorities can monitor live crowd density, manage time slots, view occupancy analytics, verify tickets, and respond to safety alerts through a centralized admin dashboard.
+Digi-Darshan is a next-generation smart temple ecosystem that digitally transforms pilgrimage management using Artificial Intelligence, Machine Learning, Real-Time Analytics, Predictive Crowd Intelligence, and Intelligent Automation.
 
----
-
-## Project Overview
-
-Large pilgrimage sites often face overcrowding, long queues, traffic congestion, lack of real-time communication, and safety risks during peak hours and festivals. Digii-Darshan addresses these issues through a scalable software-based solution that combines slot-based ticketing, live occupancy tracking, QR verification, emergency alerting, and role-based dashboards.
-
-The goal is to make temple visits safer, smoother, more accessible, and better organized for pilgrims, senior citizens, differently-abled visitors, temple administrators, and emergency response teams.
+The platform connects **Pilgrims, Temple Administrators, Control Room Operators, Security Personnel, Kiosk Operators, and QR Scanners** through a unified, role-based system designed to enhance safety, reduce waiting time, improve operational efficiency, and deliver a seamless spiritual experience.
 
 ---
 
-## Key Features
+# Vision
 
-### Pilgrim Module
+**Safe Devotion. Smart Pilgrimage.**
 
-* Secure pilgrim registration and login.
-* Temple-wise darshan slot booking.
-* QR-based digital ticket generation.
-* Live queue and booking status.
-* Parking and route guidance.
-* Emergency alerts and temple notifications.
-* Senior citizen and differently-abled priority booking support.
-
-### Admin Control Room
-
-* Role-based admin login.
-* Temple-wise crowd monitoring dashboard.
-* Live occupancy and crowd density updates.
-* Slot creation and capacity management.
-* Emergency alert generation.
-* Booking and check-in analytics.
-* Parking zone and route visibility.
-
-### Scanner / Gate Staff Module
-
-* QR ticket verification.
-* Pilgrim check-in and check-out flow.
-* Ticket validity status.
-* Entry control support for temple gates.
-
-### Emergency & Safety Module
-
-* Real-time alert broadcasting.
-* Emergency instructions for pilgrims.
-* Crowd risk visibility for admins.
-* Supports faster coordination with response teams.
+To build India's most intelligent digital pilgrimage ecosystem that combines AI, predictive analytics, automation, and real-time monitoring to create safer, faster, and smarter temple experiences.
 
 ---
 
-## Tech Stack
+# Key Highlights
 
-### Frontend
+* AI-driven Smart Temple Management
+* Real-Time Crowd Monitoring
+* Predictive Crowd Congestion Forecasting
+* QR-Based Digital Darshan
+* Live Dashboard & Analytics
+* AI Assistants for Pilgrims and Administrators
+* Role-Based Secure Access
+* Emergency Response Management
+* Gate Flow Optimization
+* Senior Citizen Assistance
+* Real-Time WebSocket Communication
 
-* Next.js
+---
+
+# Core Features
+
+## Pilgrim Portal
+
+* Online Darshan Booking
+* QR Code Based Digital Pass
+* Live Crowd Status
+* Real-Time Queue Monitoring
+* VIP & Special Darshan Booking
+* Booking History
+* Personalized Dashboard
+* Temple Information
+* Emergency SOS
+* AI Sathi Virtual Assistant
+* Senior Sathi Assistance
+* Upcoming Visit Management
+
+---
+
+## Admin Command Center
+
+* Temple Overview Dashboard
+* Live Crowd Analytics
+* Heatmap Visualization
+* Live Crowd Density Prediction
+* Gate Flow Monitoring
+* Temple Capacity Monitoring
+* Smart Alert Management
+* Slot Management
+* Booking Management
+* Parking Monitoring
+* Notification Broadcast System
+* Emergency Incident Handling
+* AI FlowMaster Dashboard
+* AI Intelligence Workspace
+
+---
+
+## Scanner Portal
+
+* QR Ticket Validation
+* Camera-Based QR Scanner
+* Check-In / Check-Out
+* Live Visitor Verification
+* Invalid Ticket Detection
+* Duplicate Entry Prevention
+* Entry Logs
+
+---
+
+## Kiosk System
+
+* Walk-in Ticket Booking
+* QR Ticket Printing
+* Booking Assistance
+* Senior Citizen Help
+* Digital Queue Information
+
+---
+
+## Senior Sathi
+
+Designed for elderly pilgrims.
+
+Features include:
+
+* Assisted Navigation
+* Wheelchair Request
+* Medical Assistance
+* Voice Guided Help
+* Emergency Support
+* AI Based Assistance
+
+---
+
+## Digi AI Sathi
+
+An intelligent multilingual assistant powered by LLMs.
+
+Capabilities include:
+
+* Temple Information
+* Route Guidance
+* Darshan Recommendations
+* Booking Assistance
+* FAQ Resolution
+* Queue Information
+* Navigation Help
+* Voice Interaction (Upcoming)
+
+---
+
+## AI FlowMaster
+
+Temple Administration Intelligence Suite
+
+Provides:
+
+* Crowd Analysis
+* Prediction Dashboard
+* Incident Suggestions
+* Operational Insights
+* Smart Recommendations
+* Live Temple Intelligence
+
+---
+
+# AI Modules
+
+### Crowd Intelligence
+
+* Live Crowd Density Estimation
+* Crowd Severity Classification
+* Zone Monitoring
+* Dynamic Capacity Tracking
+
+---
+
+### Predictive Analytics
+
+* Hourly Crowd Prediction
+* Daily Visitor Forecast
+* Peak Hour Estimation
+* Festival Traffic Prediction
+* AI Trend Analysis
+
+---
+
+### Real-Time Analytics
+
+* Visitor Statistics
+* Temple Occupancy
+* Booking Metrics
+* Heatmaps
+* Entry/Exit Analytics
+
+---
+
+### Intelligent Alerts
+
+Automatic detection of:
+
+* Overcrowding
+* Capacity Breach
+* Emergency Situations
+* Gate Congestion
+* VIP Movement
+
+---
+
+### Smart Recommendation Engine
+
+Suggests:
+
+* Better Darshan Slots
+* Alternate Entry Gates
+* Parking Availability
+* Crowd-Free Timings
+
+---
+
+# Role Based Architecture
+
+## Pilgrim
+
+* Booking
+* QR Ticket
+* Dashboard
+* Crowd Status
+* AI Assistant
+
+---
+
+## Temple Administrator
+
+* Command Center
+* Crowd Management
+* Booking Control
+* Analytics
+* Notifications
+
+---
+
+## Scanner Operator
+
+* QR Validation
+* Entry Verification
+* Check-In
+* Check-Out
+
+---
+
+## Kiosk Operator
+
+* Offline Booking
+* Ticket Printing
+* Walk-in Registration
+
+---
+
+## Control Room
+
+* Emergency Monitoring
+* Gate Flow Control
+* AI Intelligence
+* Crowd Supervision
+
+---
+
+# Technology Stack
+
+## Frontend
+
+* Next.js 14
 * React.js
 * TypeScript
 * Tailwind CSS
-* Axios
-* Responsive UI Components
-
-### Backend
-
-* Python
-* FastAPI
-* SQLAlchemy
-* Pydantic
-* JWT Authentication
+* Framer Motion
+* GSAP (UI Animations)
+* Three.js (Planned)
 * WebSockets
+
+---
+
+## Backend
+
+* FastAPI
+* Python
+* SQLAlchemy
+* JWT Authentication
 * REST APIs
-
-### Database
-
-* SQLite for local development
-* PostgreSQL-ready for production deployment
-
-### DevOps & Deployment
-
-* Git & GitHub
-* Vercel-ready frontend
-* Render/Railway-ready backend
-* Environment-based configuration
-* Docker support
+* WebSocket Server
+* Background Services
 
 ---
 
-## System Architecture
+## Database
+
+* SQLite (Development)
+* PostgreSQL (Production Ready)
+
+---
+
+## AI & Machine Learning
+
+* Machine Learning
+* Predictive Analytics
+* NLP
+* Retrieval-Augmented Generation (Planned)
+* Continuous Learning Framework (Planned)
+* Gemini Integration (Planned)
+
+---
+
+## Security
+
+* JWT Authentication
+* Role-Based Authorization
+* Secure API Design
+* Protected Routes
+* Clerk Authentication (Upcoming)
+* OTP Verification (Upcoming)
+
+---
+
+## DevOps
+
+* Docker
+* Docker Compose
+* Render Deployment
+* GitHub Actions (Planned)
+
+---
+
+# Real-Time Components
+
+* Live Crowd Monitoring
+* WebSocket Updates
+* Dynamic Dashboard
+* Live Notifications
+* Instant Scanner Validation
+* Smart Alerts
+
+---
+
+
+
+# Project Structure
 
 ```text
-digidarshan-fullstack/
-│
-├── backend/
-│   ├── app/
-│   │   ├── main.py
-│   │   ├── models.py
-│   │   ├── schemas.py
-│   │   ├── database.py
-│   │   ├── security.py
-│   │   ├── seed.py
-│   │   └── routers/
-│   │       ├── auth.py
-│   │       ├── temples.py
-│   │       ├── bookings.py
-│   │       ├── crowd.py
-│   │       ├── alerts.py
-│   │       ├── scanner.py
-│   │       └── analytics.py
-│   │
-│   ├── requirements.txt
-│   ├── Dockerfile
-│   └── .env.example
-│
-├── frontend/
-│   ├── app/
-│   │   ├── page.tsx
-│   │   ├── login/
-│   │   ├── register/
-│   │   ├── dashboard/
-│   │   ├── admin/
-│   │   └── scanner/
-│   │
-│   ├── components/
-│   ├── lib/
-│   ├── package.json
-│   ├── tailwind.config.ts
-│   └── .env.local.example
-│
-├── docker-compose.yml
-├── README.md
-└── .gitignore
+backend/
+│── app/
+│   ├── routers/
+│   ├── services/
+│   ├── models.py
+│   ├── schemas.py
+│   ├── security.py
+│   └── main.py
+
+frontend/
+│── app/
+│── components/
+│── lib/
+│── public/
+
+docker-compose.yml
+README.md
 ```
 
----
-
-## Database Design
-
-The backend uses SQLAlchemy ORM with a relational database structure.
-
-### Main Tables
-
-```text
-users
-temples
-time_slots
-bookings
-crowd_readings
-alerts
-parking_zones
-transport_routes
-notifications
-```
-
-### User Roles
-
-```text
-pilgrim
-admin
-operator
-scanner
-```
-
-Each role has a separate workflow and dashboard access, making the system suitable for real-world temple administration and crowd-control operations.
-
----
 
 
 
----
-
-## Demo Credentials
-
-After running the seed command, use the following demo accounts:
-
-| Role               | Email                                                     | Password     |
-| ------------------ | --------------------------------------------------------- | ------------ |
-| Admin              | [admin@digidarshan.in](mailto:admin@digidarshan.in)       | Admin@123    |
-| Emergency Operator | [operator@digidarshan.in](mailto:operator@digidarshan.in) | Operator@123 |
-| Scanner            | [scanner@digidarshan.in](mailto:scanner@digidarshan.in)   | Scanner@123  |
-| Pilgrim            | [pilgrim@digidarshan.in](mailto:pilgrim@digidarshan.in)   | Pilgrim@123  |
-
----
-
-## API Modules
-
-### Authentication
-
-* User registration
-* Login
-* JWT token generation
-* Role-based access control
-
-### Booking System
-
-* Temple selection
-* Slot booking
-* QR ticket generation
-* Booking status tracking
-
-### Crowd Monitoring
-
-* Live crowd readings
-* Occupancy updates
-* Temple-wise crowd density
-* Admin dashboard integration
-
-### Alert System
-
-* Emergency alert creation
-* Alert broadcasting
-* Pilgrim-side safety notifications
-
-### Scanner System
-
-* QR validation
-* Check-in
-* Check-out
-* Ticket status verification
-
----
-
-
-```
-
-Backend environment variables:
-
-```env
-DATABASE_URL=postgresql+psycopg2://USER:PASSWORD@HOST:PORT/DB_NAME
-SECRET_KEY=your-secure-secret-key
-CORS_ORIGINS=https://your-frontend-domain.vercel.app
-ACCESS_TOKEN_EXPIRE_MINUTES=10080
-```
-
-### Production Database
-
-Recommended databases:
-
-```text
-Neon PostgreSQL
-Supabase PostgreSQL
-Railway PostgreSQL
-Render PostgreSQL
-```
-
----
-
-## Real-World Impact
-
-Digii-Darshan is designed to support safer and more efficient pilgrimage experiences by reducing overcrowding, improving queue discipline, supporting emergency communication, and making darshan more accessible for senior citizens and differently-abled pilgrims.
-
-### Expected Benefits
-
-* Reduced waiting time for pilgrims.
-* Improved crowd regulation at temple entry points.
-* Faster emergency response.
-* Better accessibility for elderly and differently-abled visitors.
-* Organized parking and traffic flow.
-* Data-driven decision-making for temple authorities.
-* Scalable model for multiple pilgrimage sites.
-
----
-
-
-
-
-
-## Author
+# Contributors
 
 **Ashish Ranjan**
-Full-Stack Developer | AI/ML Enthusiast | Smart India Hackathon Participant
 
-GitHub: [Ashish-Ranjan11](https://github.com/Ashish-Ranjan11)
-
----
-
-## Repository
-
-```text
-https://github.com/Ashish-Ranjan11/Digi_Darshan
-```
+AI Engineer • Full Stack Developer • Machine Learning Enthusiast
 
 ---
 
-## License
+# License
 
-This project is developed for educational, innovation, and hackathon purposes.
+MIT License
 
+---
+
+> **Safe Devotion. Smart Pilgrimage.**
+>
+> Building the future of intelligent temple management through Artificial Intelligence, Predictive Analytics, and Digital Transformation.
