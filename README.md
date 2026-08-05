@@ -1,243 +1,141 @@
-# 🛕 Digi-Darshan: Safe Devotion. Smart Pilgrimage.
+<div align="center">
 
-> **An AI-Powered Intelligent Temple Management & Smart Pilgrimage Platform**
+# 🛕 Digi-Darshan
+### AI-Powered Real-Time Crowd Intelligence & Temple Management Platform
 
-Digi-Darshan is a next-generation smart temple ecosystem that digitally transforms pilgrimage management using Artificial Intelligence, Machine Learning, Real-Time Analytics, Predictive Crowd Intelligence, and Intelligent Automation.
+<p align="center">
+<img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python"/>
+<img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi"/>
+<img src="https://img.shields.io/badge/Next.js-Frontend-black?style=for-the-badge&logo=nextdotjs"/>
+<img src="https://img.shields.io/badge/PostgreSQL-Database-blue?style=for-the-badge&logo=postgresql"/>
+<img src="https://img.shields.io/badge/WebSockets-Real_Time-success?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/AI-Crowd_Analytics-red?style=for-the-badge"/>
+</p>
 
-The platform connects **Pilgrims, Temple Administrators, Control Room Operators, Security Personnel, Kiosk Operators, and QR Scanners** through a unified, role-based system designed to enhance safety, reduce waiting time, improve operational efficiency, and deliver a seamless spiritual experience.
+*A Smart Temple Crowd Management & Predictive Analytics Platform designed for modern pilgrimage management.*
 
----
-
-# Vision
-
-**Safe Devotion. Smart Pilgrimage.**
-
-To build India's most intelligent digital pilgrimage ecosystem that combines AI, predictive analytics, automation, and real-time monitoring to create safer, faster, and smarter temple experiences.
-
----
-
-# Key Highlights
-
-* AI-driven Smart Temple Management
-* Real-Time Crowd Monitoring
-* Predictive Crowd Congestion Forecasting
-* QR-Based Digital Darshan
-* Live Dashboard & Analytics
-* AI Assistants for Pilgrims and Administrators
-* Role-Based Secure Access
-* Emergency Response Management
-* Gate Flow Optimization
-* Senior Citizen Assistance
-* Real-Time WebSocket Communication
+</div>
 
 ---
 
-# Core Features
+# Overview
+
+Digi-Darshan is an AI-powered real-time crowd management platform designed to modernize pilgrimage experiences through predictive analytics, live monitoring, intelligent slot management, and centralized command operations.
+
+The platform enables temple authorities to monitor crowd density, forecast congestion, allocate visitor slots intelligently, and provide pilgrims with a seamless digital booking experience.
+
+Instead of reacting to overcrowding, Digi-Darshan predicts crowd build-up before it happens.
+
+---
+
+# Problem Statement
+
+Large religious gatherings often face:
+
+- Overcrowding
+- Stampede risks
+- Manual visitor management
+- Lack of predictive planning
+- Long waiting times
+- Poor resource allocation
+- No centralized analytics dashboard
+
+Digi-Darshan solves these challenges through AI-driven crowd intelligence.
+
+---
+
+# Key Features
+
+## AI Crowd Prediction
+
+- Predict visitor inflow
+- Peak-hour forecasting
+- Congestion prediction
+- Dynamic risk estimation
+- Historical trend analysis
+
+---
+
+## Live Crowd Monitoring
+
+- Real-time occupancy updates
+- Crowd density visualization
+- Live dashboard
+- Zone-wise monitoring
+- Heatmap visualization
+
+---
+
+## Smart Slot Booking
+
+- Dynamic booking slots
+- Capacity-aware scheduling
+- Automatic slot closure
+- Booking history
+- QR-based entry support
+
+---
+
+## Command Centre
+
+Real-time operations dashboard including:
+
+- Crowd alerts
+- Occupancy status
+- Emergency notifications
+- Control actions
+- Analytics panels
+- Live event monitoring
+
+---
+
+## Temple Administration
+
+- Temple management
+- Capacity configuration
+- Daily schedules
+- Staff monitoring
+- Visitor statistics
+
+---
 
 ## Pilgrim Portal
 
-* Online Darshan Booking
-* QR Code Based Digital Pass
-* Live Crowd Status
-* Real-Time Queue Monitoring
-* VIP & Special Darshan Booking
-* Booking History
-* Personalized Dashboard
-* Temple Information
-* Emergency SOS
-* AI Sathi Virtual Assistant
-* Senior Sathi Assistance
-* Upcoming Visit Management
+- Online booking
+- Booking history
+- Notifications
+- Temple information
+- Digital passes
 
 ---
 
-## Admin Command Center
+## Real-Time Analytics
 
-* Temple Overview Dashboard
-* Live Crowd Analytics
-* Heatmap Visualization
-* Live Crowd Density Prediction
-* Gate Flow Monitoring
-* Temple Capacity Monitoring
-* Smart Alert Management
-* Slot Management
-* Booking Management
-* Parking Monitoring
-* Notification Broadcast System
-* Emergency Incident Handling
-* AI FlowMaster Dashboard
-* AI Intelligence Workspace
+- Hourly visitors
+- Daily statistics
+- Weekly trends
+- Monthly reports
+- Peak traffic analysis
 
 ---
 
-## Scanner Portal
+## Notification System
 
-* QR Ticket Validation
-* Camera-Based QR Scanner
-* Check-In / Check-Out
-* Live Visitor Verification
-* Invalid Ticket Detection
-* Duplicate Entry Prevention
-* Entry Logs
+- Booking confirmation
+- Crowd alerts
+- Emergency notices
+- Schedule changes
+- Administrative broadcasts
 
 ---
 
-## Kiosk System
+## Dashboard
 
-* Walk-in Ticket Booking
-* QR Ticket Printing
-* Booking Assistance
-* Senior Citizen Help
-* Digital Queue Information
-
----
-
-## Senior Sathi
-
-Designed for elderly pilgrims.
-
-Features include:
-
-* Assisted Navigation
-* Wheelchair Request
-* Medical Assistance
-* Voice Guided Help
-* Emergency Support
-* AI Based Assistance
-
----
-
-## Digi AI Sathi
-
-An intelligent multilingual assistant powered by LLMs.
-
-Capabilities include:
-
-* Temple Information
-* Route Guidance
-* Darshan Recommendations
-* Booking Assistance
-* FAQ Resolution
-* Queue Information
-* Navigation Help
-* Voice Interaction (Upcoming)
-
----
-
-## AI FlowMaster
-
-Temple Administration Intelligence Suite
-
-Provides:
-
-* Crowd Analysis
-* Prediction Dashboard
-* Incident Suggestions
-* Operational Insights
-* Smart Recommendations
-* Live Temple Intelligence
-
----
-
-# AI Modules
-
-### Crowd Intelligence
-
-* Live Crowd Density Estimation
-* Crowd Severity Classification
-* Zone Monitoring
-* Dynamic Capacity Tracking
-
----
-
-### Predictive Analytics
-
-* Hourly Crowd Prediction
-* Daily Visitor Forecast
-* Peak Hour Estimation
-* Festival Traffic Prediction
-* AI Trend Analysis
-
----
-
-### Real-Time Analytics
-
-* Visitor Statistics
-* Temple Occupancy
-* Booking Metrics
-* Heatmaps
-* Entry/Exit Analytics
-
----
-
-### Intelligent Alerts
-
-Automatic detection of:
-
-* Overcrowding
-* Capacity Breach
-* Emergency Situations
-* Gate Congestion
-* VIP Movement
-
----
-
-### Smart Recommendation Engine
-
-Suggests:
-
-* Better Darshan Slots
-* Alternate Entry Gates
-* Parking Availability
-* Crowd-Free Timings
-
----
-
-# Role Based Architecture
-
-## Pilgrim
-
-* Booking
-* QR Ticket
-* Dashboard
-* Crowd Status
-* AI Assistant
-
----
-
-## Temple Administrator
-
-* Command Center
-* Crowd Management
-* Booking Control
-* Analytics
-* Notifications
-
----
-
-## Scanner Operator
-
-* QR Validation
-* Entry Verification
-* Check-In
-* Check-Out
-
----
-
-## Kiosk Operator
-
-* Offline Booking
-* Ticket Printing
-* Walk-in Registration
-
----
-
-## Control Room
-
-* Emergency Monitoring
-* Gate Flow Control
-* AI Intelligence
-* Crowd Supervision
+- Live occupancy
+- AI insights
+- Booking statistics
+- Revenue analytics
+- Crowd trends
 
 ---
 
@@ -245,119 +143,223 @@ Suggests:
 
 ## Frontend
 
-* Next.js 14
-* React.js
-* TypeScript
-* Tailwind CSS
-* Framer Motion
-* GSAP (UI Animations)
-* Three.js (Planned)
-* WebSockets
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Recharts
+- Framer Motion
+- Axios
+- React Icons
 
 ---
 
 ## Backend
 
-* FastAPI
-* Python
-* SQLAlchemy
-* JWT Authentication
-* REST APIs
-* WebSocket Server
-* Background Services
+- Python
+- FastAPI
+- SQLAlchemy
+- REST APIs
+- WebSockets
+- JWT Authentication
 
 ---
 
 ## Database
 
-* SQLite (Development)
-* PostgreSQL (Production Ready)
+- PostgreSQL
+- SQLite (Development)
 
 ---
 
-## AI & Machine Learning
+## AI Components
 
-* Machine Learning
-* Predictive Analytics
-* NLP
-* Retrieval-Augmented Generation (Planned)
-* Continuous Learning Framework (Planned)
-* Gemini Integration (Planned)
-
----
-
-## Security
-
-* JWT Authentication
-* Role-Based Authorization
-* Secure API Design
-* Protected Routes
-* Clerk Authentication (Upcoming)
-* OTP Verification (Upcoming)
+- Crowd Prediction Engine
+- Analytics Engine
+- Risk Estimation
+- Forecasting Models
+- Statistical Analysis
 
 ---
 
 ## DevOps
 
-* Docker
-* Docker Compose
-* Render Deployment
-* GitHub Actions (Planned)
+- Docker
+- GitHub
+- Netlify
+- Vercel
 
 ---
 
-# Real-Time Components
+# Project Architecture
 
-* Live Crowd Monitoring
-* WebSocket Updates
-* Dynamic Dashboard
-* Live Notifications
-* Instant Scanner Validation
-* Smart Alerts
+```
+                Digi-Darshan
 
----
-
-
-
-# Project Structure
-
-```text
-backend/
-│── app/
-│   ├── routers/
-│   ├── services/
-│   ├── models.py
-│   ├── schemas.py
-│   ├── security.py
-│   └── main.py
-
-frontend/
-│── app/
-│── components/
-│── lib/
-│── public/
-
-docker-compose.yml
-README.md
+         Pilgrim Portal
+               │
+               │
+        Temple Admin Portal
+               │
+               ▼
+      ┌──────────────────────┐
+      │   Next.js Frontend   │
+      └──────────────────────┘
+               │
+               ▼
+      ┌──────────────────────┐
+      │    FastAPI Backend   │
+      └──────────────────────┘
+        │       │        │
+        ▼       ▼        ▼
+ Prediction  Analytics  Control Engine
+        │
+        ▼
+ PostgreSQL Database
 ```
 
+---
 
+# Major Modules
 
+## Authentication
 
-# Contributors
+- JWT Login
+- Admin Authentication
+- Role Management
+
+---
+
+## Temple Management
+
+- Temple registration
+- Capacity management
+- Booking schedule
+- Slot generation
+
+---
+
+## Crowd Engine
+
+- Live occupancy
+- Visitor tracking
+- Congestion estimation
+- AI prediction
+
+---
+
+## Analytics Engine
+
+- Crowd statistics
+- Forecast reports
+- Trend analysis
+- Peak estimation
+
+---
+
+## Booking Engine
+
+- Smart slot allocation
+- Capacity validation
+- Queue management
+- Booking confirmation
+
+---
+
+## Command Centre
+
+- Emergency controls
+- Live analytics
+- AI recommendations
+- System monitoring
+
+---
+
+# AI Workflow
+
+```
+Visitor Data
+      │
+      ▼
+Historical Analysis
+      │
+      ▼
+Prediction Engine
+      │
+      ▼
+Congestion Forecast
+      │
+      ▼
+Dynamic Slot Allocation
+      │
+      ▼
+Real-Time Dashboard
+```
+
+---
+
+# Folder Structure
+
+```
+Digi-Darshan
+
+frontend/
+│
+├── app/
+├── components/
+├── pages/
+├── hooks/
+├── services/
+└── public/
+
+backend/
+│
+├── routers/
+├── models/
+├── services/
+├── analytics/
+├── prediction/
+├── database/
+└── main.py
+```
+
+---
+
+# Highlights
+
+- AI-powered crowd prediction
+- Real-time monitoring
+- Temple administration portal
+- Dynamic booking engine
+- Live analytics dashboard
+- WebSocket-based updates
+- Scalable architecture
+- Responsive interface
+- REST API architecture
+- Modular backend
+- Production-ready design
+
+---
+
+# Future Scope
+
+- Computer Vision-based crowd estimation
+- CCTV analytics
+- Face recognition (optional)
+- GIS-based temple mapping
+- Multi-language chatbot
+- Mobile application
+- RFID integration
+- IoT sensor integration
+- Smart parking management
+- Disaster management module
+
+---
+
+# Author
 
 **Ashish Ranjan**
 
-AI Engineer • Full Stack Developer • Machine Learning Enthusiast
+B.Tech Computer Science (AI & ML)
 
----
-
-# License
-
-MIT License
-
----
-
-> **Safe Devotion. Smart Pilgrimage.**
->
-> Building the future of intelligent temple management through Artificial Intelligence, Predictive Analytics, and Digital Transformation.
+Software Engineering • Artificial Intelligence • Full Stack Development
